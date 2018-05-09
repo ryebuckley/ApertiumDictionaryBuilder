@@ -4,8 +4,8 @@ from subprocess import *
 from word import Word
 from entry import Entry
 
-ENGLISH_TEXT = "corpora/littleredridinghood.en"
-SPANISH_TEXT = "corpora/littleredridinghood.es"
+ENGLISH_TEXT = 'corpora/test.en' # "corpora/littleredridinghood.en"
+SPANISH_TEXT = 'corpora/test.sp' # "corpora/littleredridinghood.es"
 EN_ES_PATH = "../apertium/apertium-en-es/"
 EN_PATH = "../apertium/apertium-eng/"
 
@@ -48,17 +48,24 @@ def getSentences(text):
     """
 
     sents, tmp = [], []
-    for phrase in text:
+    for i, phrase in enumerate(text):
         if '\n\n' in phrase:
             if tmp:
                 sents.append(tmp)
                 tmp = []
+        elif i == len(text) - 1 and tmp:
+            sents.append(tmp)
         elif phrase:
             tmp.append(phrase)
 
     return sents
 
 def compareParagraph(eng, sp):
+    """Direct comparison of same words in both texts
+    params: eng -   english tagged sentences
+            sp  -   spanish translated tagged senteces
+    returns: nothing; prints evaluation statistic
+    """
 
     eng_words = translateParagraph(eng)
     sp_words = translateParagraph(sp)
@@ -83,6 +90,7 @@ def compareParagraph(eng, sp):
             print "Matched (%s, %s) at indices (%d, %d)" % (
             e.word, e.word, pair[0], pair[1]
         )
+    evalCoverage(eng_words, entries)
 
 def translateParagraph(p):
     """Make each word from paragraph a Word instance
@@ -93,6 +101,11 @@ def translateParagraph(p):
     return [Word(w, i) for i, w in enumerate(p)]
 
 def directCompare(eng, sp):
+    """Pair up words translated to the same words in english
+    params: eng -   list of word objects for english words
+            sp  -   list of word objects from translated sp to eng
+    returns: pairs  -   [matched word, index of matched word, translated match indices]
+    """
 
     pairs = []
     for i, w1 in enumerate(eng):
@@ -106,7 +119,15 @@ def directCompare(eng, sp):
 
     return pairs
 
+def evalCoverage(wd_ls, matched):
+    """Evaluate how well matching did
+    params: wd_ls   -   all words in corpus
+            matched -   number of matches
+    returns: nothing; prints statistic
+    """
 
+    pct = float(len(matched)) / len(wd_ls)
+    print "Percentage matched: %.3f" % pct
 
 if __name__ == '__main__':
     main()
