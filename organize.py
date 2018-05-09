@@ -1,67 +1,67 @@
 import os
+from subprocess import *
+
+from word import Word
 
 
-READ_FILE = "test.txt"
-READ_DIR = ""
+ENGLISH_TEXT = "corpora/littleredridinghood.en"
+SPANISH_TEXT = "corpora/littleredridinghood.es"
+EN_ES_PATH = "../apertium/apertium-en-es/"
+EN_PATH = "../apertium/apertium-eng/"
 
 def main():
 
-    
-    file_path = os.path.join(READ_DIR, READ_FILE)
+    eng = readData(ENGLISH_TEXT, EN_PATH, "eng-tagger")
+    sp_trans = readData(SPANISH_TEXT, EN_ES_PATH, "es-en-postchunk")
 
-    # assume this is just one paragraph
-    # we will want to break up by paragraph
-    
-    allwords, enwords, spwords = ([] for _ in range(3))
-    with open(file_path, 'r') as f:
-        for line in f:
-            line = line.strip()
-            allwords.append(line) if line else None
+    eng_sents = getSentences(eng)
+    sp_trans_sents = getSentences(sp_trans)
 
-    for i in range(len(allwords)):
-        w = Word(allwords[i], i)
-        if i % 2 == 0:
-            enwords.append(w)
-        else:
-            spwords.append(w)
-    
-    
+    for i in range(len(sp_trans_sents[0])):
+        w = Word(sp_trans_sents[0][i], i)
+    # compareParagraph(enwords, spwords)
 
 
-    # organize by place in paragraph, pos, ...
+def readData(text, apertium_path, apertium_command):
+    """Reads raw data from apertium tagger/translator
+    params: text    -   text from some corpus saved as .txt
+            apertium_path   -   path to apertium directory
+            apertium_command    -   command for translating/tagging
+    returns: parsed translation
+    """
 
-class Word(object):
-    def __init__(self, raw, position):
-        self.raw = raw
-        self.position = position
+    p1 = Popen(["cat", text], stdout=PIPE)
+    p2 = Popen(["apertium", "-d", apertium_path, apertium_command], stdin=p1.stdout, stdout=PIPE)
+    p1.stdout.close()
+    translation = p2.communicate()[0]
+    translation = translation.split("^")
 
-        self.__get_attrs()
+    return translation
 
-    def __get_attrs(self):
-        """Get attributes and word of raw input line
-        params: none
-        returns: nothing
-        """
+def getSentences(text):
+    """Parse sentences in input text and return as list of lists
+    params: text    -   text from apertium tagger
+    returns: sents  -   list of lists of sentences
+    """
 
-        parsed = self.raw.split('/')
-        if len(parsed) > 1:
-            parsed = parsed[1:]
-        
-        start_idx = parsed[0].index('<')
-        self.word = parsed[0][:start_idx]
+    sents, tmp = [], []
+    for phrase in text:
+        if '.<sent>' in phrase:
+            if tmp:
+                sents.append(tmp)
+                tmp = []
+        elif phrase:
+            tmp.append(phrase)
 
-        self.analyses = []
-        for i in range(len(parsed)):
-            start_idx = parsed[i].index('<')
-            analysis = parsed[i][start_idx+1:].replace('>', '')
-            split_pos = analysis.split('<')
-            
-            self.analyses.append(split_pos)
+    return sents
 
-        
-            
 
-        
-        
+
+
+
+
+
+
+
 if __name__ == '__main__':
     main()
