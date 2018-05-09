@@ -1,7 +1,7 @@
 """
 Writes xml rules based off of a parallel corpus
 """
-from organize import Word
+from word import Word
 import optparse
 
 #TODO sort out 0 todos below
