@@ -1,6 +1,7 @@
 <section id="main" type="standard">
    <!-- Define entries within <e> here. -->
    <!-- nouns -->
+	 <e><p><l>chico<s n="n"/><s n="f"/></l><r>girl<s n="n"/></r></p></e>
 	 <e><p><l>girl<s n="n"/></l><r>chico<s n="n"/><s n="f"/></r></p></e>
 	 <e><p><l>girl<s n="n"/></l><r>chico<s n="n"/></r></p></e>
    <e><p><l>pige<s n="n"/><s n="ut"/></l><r>girl<s n="n"/></r></p></e>
