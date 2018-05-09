@@ -1,12 +1,12 @@
-from subprocess import *
+from subprocess import Popen, PIPE
 import urllib.request, os, nltk
 from nltk.corpus import stopwords
 
 from word import Word
 from entry import Entry
 
-ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/test.en'
-SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/test.sp'
+ENGLISH_TEXT =  'corpora/udhr.en' # 'corpora/test.en' # "corpora/littleredridinghood.en"
+SPANISH_TEXT =  'corpora/udhr.sp' # 'corpora/test.sp' # "corpora/littleredridinghood.es"
 EN_ES_PATH = "../apertium/apertium-en-es/"
 EN_PATH = "../apertium/apertium-eng/"
 BASE_URL = "http://swoogle.umbc.edu/SimService/GetSimilarity?operation=api&"
@@ -26,7 +26,7 @@ def main():
     eng_sents = getSentences(eng)
     sp_trans_sents = getSentences(sp_trans)
 
-    assert(len(eng_sents) == len(sp_trans_sents))
+    # assert(len(eng_sents) == len(sp_trans_sents))
 
     total_matches = []
     eng_reduced, sp_reduced = [], []
@@ -43,7 +43,6 @@ def main():
 
         eng_reduced.append(eng_red)
         sp_reduced.append(sp_red)
-
 
     ### now tag comparison phase / synonym analysis
 
@@ -62,13 +61,20 @@ def main():
 
         eng_syn_reduced.append(eng_2_reduced)
         sp_syn_reduced.append(sp_2_reduced)
-        break
 
     ### now remove common words
 
-    print(STOP_WORDS)
+    eng_final, sp_final = [], []
+    for i in range(len(eng_syn_reduced)):
+        eng_final_red = list(set(reduceParagraph(STOP_WORDS, eng_2_reduced)))
+        sp_final_red = list(set(reduceParagraph(STOP_WORDS, sp_2_reduced)))
 
+        eng_final.append(eng_final_red)
+        sp_final.append(sp_final_red)
 
+    print(eng_final[0])
+    print('\n')
+    print(sp_final[0])
 
 
 def readData(text, apertium_path, apertium_command):
