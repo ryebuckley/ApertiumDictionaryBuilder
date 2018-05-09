@@ -9,7 +9,7 @@ import optparse
 
 def main():
     #git input
-    parser = optparse.OptionParser(description="dissimilarity map builder")
+    parser = optparse.OptionParser(description="generator")
 
     parser.add_option('-a', '--lexL', type='string', help='The name of a file \
     storing the lexical tags for the left side language')

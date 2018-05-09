@@ -3,7 +3,7 @@ import optparse
 #-s corpora/littleredridinghood.es -e corpora/littleredridinghood.en
 def main():
 
-    parser = optparse.OptionParser(description="dissimilarity map builder")
+    parser = optparse.OptionParser(description="translator")
 
     parser.add_option('-s', '--spanish', type='string', \
     default="corpora/littleredridinghood.es", help='The name of a file storing spanish corpus')
