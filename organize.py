@@ -17,9 +17,12 @@ def main():
     eng_sents = getSentences(eng)
     sp_trans_sents = getSentences(sp_trans)
 
-    for i in range(len(sp_trans_sents[0])):
-        w = Word(sp_trans_sents[0][i], i)
-    # compareParagraph(enwords, spwords)
+    assert(len(eng_sents) == len(sp_trans_sents))
+
+    for i in range(len(eng_sents)):
+        eng, sp = eng_sents[i], sp_trans_sents[i]
+        compareParagraph(eng, sp)
+        break
 
 
 def readData(text, apertium_path, apertium_command):
@@ -46,7 +49,7 @@ def getSentences(text):
 
     sents, tmp = [], []
     for phrase in text:
-        if '.<sent>' in phrase:
+        if '\n\n' in phrase:
             if tmp:
                 sents.append(tmp)
                 tmp = []
@@ -55,11 +58,36 @@ def getSentences(text):
 
     return sents
 
+def compareParagraph(eng, sp):
 
+    eng_words = translateParagraph(eng)
+    sp_words = translateParagraph(sp)
+    pairs = directCompare(eng_words, sp_words)
 
+    seen_words = []
+    # for
 
+def translateParagraph(p):
+    """Make each word from paragraph a Word instance
+    params: p   -   input paragraph of tagged text
+    returns: list of Word instances
+    """
 
+    return [Word(w, i) for i, w in enumerate(p)]
 
+def directCompare(eng, sp):
+
+    pairs = []
+    for i, w1 in enumerate(eng):
+        curr_indices = []
+        for j, w2 in enumerate(sp):
+            if w1.word == w2.word:
+                curr_indices.append(j)
+
+        if curr_indices:
+            pairs.append([w1.word, i, curr_indices])
+
+    return pairs
 
 
 
