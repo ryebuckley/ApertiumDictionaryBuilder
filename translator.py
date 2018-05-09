@@ -5,15 +5,18 @@ def main():
 
     parser = optparse.OptionParser(description="dissimilarity map builder")
 
-    parser.add_option('-s', '--spanish', type='string', help='The name of a file storing spanish corpus')
+    parser.add_option('-s', '--spanish', type='string', \
+    default="corpora/littleredridinghood.es", help='The name of a file storing spanish corpus')
 
-    parser.add_option('-e', '--english', type='string', help='the name of a file storing an english corpus')
+    parser.add_option('-e', '--english', type='string', \
+    default="corpora/littleredridinghood.en", help='the name of a file storing an english corpus')
 
-    parser.add_option('-o', '--output', type='string', help='the name of an output file')
+    parser.add_option('-o', '--output', type='string', \
+    default="default_output.txt", help='the name of an output file')
 
     (opts, args) = parser.parse_args()
 
-    mandatories = ["spanish", "english", "output"]
+    mandatories = []
 
     for m in mandatories:
         if not opts.__dict__[m]:
@@ -28,7 +31,7 @@ def main():
     output=p2.communicate()[0]
     output = output.decode()
     output = output.split("^")
-    print(output[3])
+    # print(output[3])
 
     p1 = Popen(["cat", opts.english], stdout=PIPE)
     p2 = Popen(["apertium", "-d", "developed_resources/apertium-eng", "eng-tagger"], stdin=p1.stdout, stdout=PIPE)
@@ -36,7 +39,7 @@ def main():
     output1=p2.communicate()[0]
     output1 = output1.decode()
     output1 = output1.split("^")
-    print(output1[3])
+    # print(output1[3])
 
     output, output1 = organize(output, output1)
     write_to_file(output, output1, opts.output)
