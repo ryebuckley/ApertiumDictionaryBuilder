@@ -44,7 +44,7 @@ def main():
     langL_word = Word("be<vbser><past><p3><sg>", 13)
     langL_word1 = Word("girl<n><sg>", 13)
     # a word class for the right side of dict entry
-    langR_word = Word("ser<vbser><inf>", 9)
+    langR_word = Word("Ser<vbser><inf>", 9)
     langR_word1 = Word("chico<n><f><sg>", 9)
 
     langL_words = [langL_word, langL_word1]
@@ -125,8 +125,6 @@ def build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags):
         given two word objects and two lists of lexical tags builds an xml
         dictionary entry
     """
-    print(langL_word.analyses[0])
-    print(langR_word.analyses[0])
     start = "\t <e><p><l>" + langL_word.word
     end = "</r></p></e>"
     mid = "</l><r>" + langR_word.word
