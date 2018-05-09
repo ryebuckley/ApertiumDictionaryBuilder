@@ -1,6 +1,6 @@
 from subprocess import *
-import urllib2
-import os
+import urllib.request, os, nltk
+from nltk.corpus import stopwords
 
 from word import Word
 from entry import Entry
@@ -16,6 +16,7 @@ THRESH_DICT = {
     'vblex': 0.7,
     'vbmod': 0.7,
 }
+STOP_WORDS = list(stopwords.words('english'))
 
 def main():
 
@@ -27,23 +28,45 @@ def main():
 
     assert(len(eng_sents) == len(sp_trans_sents))
 
+    total_matches = []
     eng_reduced, sp_reduced = [], []
     for i in range(len(eng_sents)):
         eng, sp = eng_sents[i], sp_trans_sents[i]
         entries, eng_words, sp_words = compareParagraph(eng, sp)
         used_words = [w.word for w in entries]
 
-        evalCoverage(eng, entries)
+        match_count = sum([w.getNumMatches() for w in entries])
+        total_matches.append(match_count)
+        evalCoverage(eng, match_count, "Initial match percentage: ")
         eng_red = reduceParagraph(used_words, eng_words)
         sp_red = reduceParagraph(used_words, sp_words)
 
         eng_reduced.append(eng_red)
         sp_reduced.append(sp_red)
+
+
+    ### now tag comparison phase / synonym analysis
+
+    eng_syn_reduced, sp_syn_reduced = [], []
+    for i in range(len(eng_reduced)):
+        eng_red, sp_red = eng_reduced[i], sp_reduced[i]
+        matches = checkSynonmyms(eng_red, sp_red)
+        total_matches[i] += len(matches)
+        evalCoverage(eng_sents[i], total_matches[i], "After synonym analysis: ")
+
+        used_words_eng = list(set([m[0].word for m in matches]))
+        used_words_sp = [m[1].word for m in matches]
+
+        eng_2_reduced = reduceParagraph(used_words_eng, eng_red)
+        sp_2_reduced = reduceParagraph(used_words_sp, sp_red)
+
+        eng_syn_reduced.append(eng_2_reduced)
+        sp_syn_reduced.append(sp_2_reduced)
         break
 
-    ### now tag comparison phase
+    ### now remove common words
 
-    matches = checkSynonmyms(eng_red, sp_red)
+    print(STOP_WORDS)
 
 
 
@@ -60,6 +83,7 @@ def readData(text, apertium_path, apertium_command):
     p2 = Popen(["apertium", "-d", apertium_path, apertium_command], stdin=p1.stdout, stdout=PIPE)
     p1.stdout.close()
     translation = p2.communicate()[0]
+    translation = translation.decode()
     translation = translation.split("^")
 
     return translation
@@ -143,22 +167,16 @@ def directCompare(eng, sp):
 
     return pairs
 
-def evalCoverage(wd_ls, matched):
+def evalCoverage(wd_ls, match_count, message):
     """Evaluate how well matching did
     params: wd_ls   -   all words in corpus
-            matched -   number of matches
+            match_count -   number of matches
+            message     -   to be printed out to user
     returns: nothing; prints statistic
     """
 
-    # for e in matched:
-    #     for pair in e.matches:
-    #         print "Matched (%s, %s) at indices (%d, %d)" % (
-    #         e.word, e.word, pair[0], pair[1]
-    #     )
-
-    match_count = sum([w.getNumMatches() for w in matched])
     pct = float(match_count) / len(wd_ls)
-    print "Percentage matched: %.3f" % pct
+    print(message + "%.3f" % pct)
 
 def reduceParagraph(used_words, word_ls):
     """Take out already matched words from list of word instances
@@ -203,7 +221,7 @@ def checkSynonmyms(eng_list, sp_list):
 
                 # compare relative positions in text
                 if abs(eng_pct - sp_pct) < 0.20:
-                    page = urllib2.urlopen(createURL(w1, w2))
+                    page = urllib.request.urlopen(createURL(w1, w2))
                     score = float(page.read())
 
                     # check if score is above threshold
