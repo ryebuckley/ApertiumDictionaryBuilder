@@ -1,4 +1,5 @@
 from subprocess import *
+import urllib2
 import os
 
 from word import Word
@@ -8,6 +9,13 @@ ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/test.en'
 SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/test.sp'
 EN_ES_PATH = "../apertium/apertium-en-es/"
 EN_PATH = "../apertium/apertium-eng/"
+BASE_URL = "http://swoogle.umbc.edu/SimService/GetSimilarity?operation=api&"
+
+DEFAULT_THRESH = 0.2
+THRESH_DICT = {
+    'vblex': 0.7,
+    'vbmod': 0.7,
+}
 
 def main():
 
@@ -31,11 +39,11 @@ def main():
 
         eng_reduced.append(eng_red)
         sp_reduced.append(sp_red)
-
         break
 
     ### now tag comparison phase
 
+    matches = checkSynonmyms(eng_red, sp_red)
 
 
 
@@ -142,11 +150,11 @@ def evalCoverage(wd_ls, matched):
     returns: nothing; prints statistic
     """
 
-    for e in matched:
-        for pair in e.matches:
-            print "Matched (%s, %s) at indices (%d, %d)" % (
-            e.word, e.word, pair[0], pair[1]
-        )
+    # for e in matched:
+    #     for pair in e.matches:
+    #         print "Matched (%s, %s) at indices (%d, %d)" % (
+    #         e.word, e.word, pair[0], pair[1]
+    #     )
 
     match_count = sum([w.getNumMatches() for w in matched])
     pct = float(match_count) / len(wd_ls)
@@ -160,6 +168,62 @@ def reduceParagraph(used_words, word_ls):
     """
 
     return [wd for wd in word_ls if wd.word not in used_words]
+
+def createURL(w1, w2):
+    """Create URL pattern for querying swoogle API
+    params: w1 & w2 -   word instances
+    returns: completed URL pattern for querying
+    """
+
+    w1 = w1.word.replace(' ', '%20')
+    w2 = w2.word.replace(' ', '%20')
+    w1 = w1.replace('#', '')
+    w2 = w2.replace('#', '')
+    return BASE_URL + 'phrase1=' + w1 + '&' + 'phrase2=' + w2
+
+def checkSynonmyms(eng_list, sp_list):
+    """Checks for synonyms in two lists of word instances
+    params: eng_list    -   list of word instances in english
+            sp_list     -   list of word instances from translated spanish
+    returns:
+    """
+
+    matches = []
+    for i, w1 in enumerate(eng_list):
+        base_pos = getPartsOfSpeech(w1)
+
+        for j, w2 in enumerate(sp_list):
+            sub_pos = getPartsOfSpeech(w2)
+
+            # compare parts of speech
+            same_pos = compareLists(base_pos, sub_pos)
+            if same_pos:
+                eng_pct = i / float(len(eng_list))
+                sp_pct = j / float(len(sp_list))
+
+                # compare relative positions in text
+                if abs(eng_pct - sp_pct) < 0.20:
+                    page = urllib2.urlopen(createURL(w1, w2))
+                    score = float(page.read())
+
+                    # check if score is above threshold
+                    if score > THRESH_DICT.get(same_pos[0], DEFAULT_THRESH):
+                        matches.append((w1, w2, score, i, j))
+
+    return matches
+
+
+def getPartsOfSpeech(w):
+
+    return [ls[0] for ls in w.analyses if ls]
+
+def compareLists(ls1, ls2):
+
+    matches = []
+    for item in ls1:
+        if item in ls2:
+            matches.append(item)
+    return matches
 
 if __name__ == '__main__':
     main()

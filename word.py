@@ -20,7 +20,7 @@ class Word(object):
         returns: nothing
         """
 
-        if self.raw[0] == '*':
+        if '*' in self.raw or self.raw[0] == '@':
             self.word = self.raw
             self.analyses = [[]]
 
