@@ -56,7 +56,6 @@ def main():
         entry = build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags)
         entries.append(entry)
 
-    print(entry)
     approve_entries(entries, dictionary)
 
     rewrite_dictionary(dictionary, opts.dictionary)
@@ -126,6 +125,8 @@ def build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags):
         given two word objects and two lists of lexical tags builds an xml
         dictionary entry
     """
+    print(langL_word.analyses[0])
+    print(langR_word.analyses[0])
     start = "\t <e><p><l>" + langL_word.word
     end = "</r></p></e>"
     mid = "</l><r>" + langR_word.word
@@ -138,11 +139,14 @@ def build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags):
         if tag in langL_lex_tags:
             start += "<s n=\"" + tag  + "\"/>"
 
+    #trust me this is necessary
+    end_tags = ""
+    #fill in tas on the right side
     for tag in langR_word.analyses[index]: #TODO replace zero with something good
         if tag in langR_lex_tags:
-            end = "<s n=\"" + tag  + "\"/>" + end
+            end_tags += "<s n=\"" + tag  + "\"/>"
 
-    entry = start + mid + end + "\n"
+    entry = start + mid + end_tags + end + "\n"
 
     return entry
 
