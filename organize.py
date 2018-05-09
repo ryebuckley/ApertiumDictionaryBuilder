@@ -19,10 +19,23 @@ def main():
 
     assert(len(eng_sents) == len(sp_trans_sents))
 
+    eng_reduced, sp_reduced = [], []
     for i in range(len(eng_sents)):
         eng, sp = eng_sents[i], sp_trans_sents[i]
-        compareParagraph(eng, sp)
-        break
+        entries, eng_words, sp_words = compareParagraph(eng, sp)
+        used_words = [w.word for w in entries]
+
+        evalCoverage(eng, entries)
+        eng_red = reduceParagraph(used_words, eng_words)
+        sp_red = reduceParagraph(used_words, sp_words)
+
+        eng_reduced.append(eng_red)
+        sp_reduced.append(sp_red)
+
+    ### now tag comparison phase
+
+    
+
 
 
 def readData(text, apertium_path, apertium_command):
@@ -86,11 +99,8 @@ def compareParagraph(eng, sp):
 
     for e in entries:
         e.collectMatches()
-        for pair in e.matches:
-            print "Matched (%s, %s) at indices (%d, %d)" % (
-            e.word, e.word, pair[0], pair[1]
-        )
-    evalCoverage(eng_words, entries)
+
+    return entries, eng_words, sp_words
 
 def translateParagraph(p):
     """Make each word from paragraph a Word instance
@@ -126,8 +136,23 @@ def evalCoverage(wd_ls, matched):
     returns: nothing; prints statistic
     """
 
+    for e in matched:
+        for pair in e.matches:
+            print "Matched (%s, %s) at indices (%d, %d)" % (
+            e.word, e.word, pair[0], pair[1]
+        )
+
     pct = float(len(matched)) / len(wd_ls)
     print "Percentage matched: %.3f" % pct
+
+def reduceParagraph(used_words, word_ls):
+    """Take out already matched words from list of word instances
+    params: used_words  -   list of words that have already been matched
+            word_ls     -   list of word instances
+    returns: list of unmatched words
+    """
+
+    return [wd for wd in word_ls if wd.word not in used_words]
 
 if __name__ == '__main__':
     main()
