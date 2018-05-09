@@ -2,7 +2,7 @@ import os
 from subprocess import *
 
 from word import Word
-
+from entry import Entry
 
 ENGLISH_TEXT = "corpora/littleredridinghood.en"
 SPANISH_TEXT = "corpora/littleredridinghood.es"
@@ -64,8 +64,25 @@ def compareParagraph(eng, sp):
     sp_words = translateParagraph(sp)
     pairs = directCompare(eng_words, sp_words)
 
-    seen_words = []
-    # for
+    seen_words, entries = [], []
+    for i, p in enumerate(pairs):
+        if p[0] not in seen_words:
+            e = Entry(p[0])
+            entries.append(e)
+            seen_words.append(p[0])
+            e.addSpanishIndices(p[2])
+        else:
+            for ent in entries:
+                if ent.word == p[0]:
+                    e = ent
+        e.addEnglighIndex(p[1])
+
+    for e in entries:
+        e.collectMatches()
+        for pair in e.matches:
+            print "Matched (%s, %s) at indices (%d, %d)" % (
+            e.word, e.word, pair[0], pair[1]
+        )
 
 def translateParagraph(p):
     """Make each word from paragraph a Word instance

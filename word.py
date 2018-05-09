@@ -4,8 +4,8 @@ class Word(object):
     def __init__(self, raw, position):
         self.raw = raw
         self.position = position
-        print self.raw
         self.__get_attrs()
+        self.word = self.word.lower()
         # print (self.word, self.analyses)
 
     def __str__(self):
