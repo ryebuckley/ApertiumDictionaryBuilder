@@ -31,3 +31,6 @@ class Entry(object):
                 break
 
         self.matches = matches
+
+    def getNumMatches(self):
+        return len(self.eng_indices)

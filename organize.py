@@ -1,11 +1,11 @@
-import os
 from subprocess import *
+import os
 
 from word import Word
 from entry import Entry
 
-ENGLISH_TEXT = 'corpora/test.en' # "corpora/littleredridinghood.en"
-SPANISH_TEXT = 'corpora/test.sp' # "corpora/littleredridinghood.es"
+ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/test.en'
+SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/test.sp'
 EN_ES_PATH = "../apertium/apertium-en-es/"
 EN_PATH = "../apertium/apertium-eng/"
 
@@ -32,9 +32,11 @@ def main():
         eng_reduced.append(eng_red)
         sp_reduced.append(sp_red)
 
+        break
+
     ### now tag comparison phase
 
-    
+
 
 
 
@@ -82,6 +84,10 @@ def compareParagraph(eng, sp):
 
     eng_words = translateParagraph(eng)
     sp_words = translateParagraph(sp)
+
+    # print eng_words
+    # print sp_words
+
     pairs = directCompare(eng_words, sp_words)
 
     seen_words, entries = [], []
@@ -142,7 +148,8 @@ def evalCoverage(wd_ls, matched):
             e.word, e.word, pair[0], pair[1]
         )
 
-    pct = float(len(matched)) / len(wd_ls)
+    match_count = sum([w.getNumMatches() for w in matched])
+    pct = float(match_count) / len(wd_ls)
     print "Percentage matched: %.3f" % pct
 
 def reduceParagraph(used_words, word_ls):
