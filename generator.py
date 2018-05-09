@@ -5,7 +5,7 @@ from organize import Word
 import optparse
 
 #TODO sort out 0 todos below
-#figure out how to make lex tag list
+#figure out how to get parrallel lists of word objects that aren't being translated
 
 def main():
     #git input
@@ -30,7 +30,8 @@ def main():
             parser.print_help()
             sys.exit()
 
-
+    #read dictionary into list
+    dictionary = read_dictionary(opts.dictionary)
     #create lists of lexical tags
     langL_lex_tags = parse_lex_tags(opts.lexL)
     langR_lex_tags = parse_lex_tags(opts.lexR)
@@ -38,23 +39,52 @@ def main():
     # a list that will contain all generated entries
     entries = []
 
-    #TODO create a foreloop that will create a bunch of entries
+    ######test input
     # a word class for the left side of dict entry
     langL_word = Word("be<vbser><past><p3><sg>", 13)
+    langL_word1 = Word("girl<n><sg>", 13)
     # a word class for the right side of dict entry
-    langR_word = Word("Ser<vbser><inf>", 9)
+    langR_word = Word("ser<vbser><inf>", 9)
+    langR_word1 = Word("chico<n><f><sg>", 9)
 
-    entry = build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags)
-    entries.append(entry)
+    langL_words = [langL_word, langL_word1]
+    langR_words = [langR_word, langR_word1]
+    #####end test input
+
+    #loops through parralel lusts of word objects and creates possible entries
+    for langL_word,langR_word in zip(langL_words, langR_words):
+        entry = build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags)
+        entries.append(entry)
+
     print(entry)
-    approve_entries(entries, opts.dictionary)
+    approve_entries(entries, dictionary)
 
-def write_entry(entry, dict):
+    rewrite_dictionary(dictionary, opts.dictionary)
+
+def write_entry(entry, dic):
     """
-        given a dictionary entry and a dictionary file,
-        writes the entry to the file
+        given a dictionary entry and a list of lines from a dictioanry file
+        adds the dictionary entry to the appropriate place in the list
     """
-    pass
+    #extract pos tag from entry
+    pos_strt_ind = entry.index("<s")
+    pos_end_ind = entry.index("/>")
+    pos = entry[pos_strt_ind:pos_end_ind+2]  #dependent on a space between <s and n=""
+
+    #find where to insert in dictioary
+    line_num = -1
+    for i,line in enumerate(dic):
+        if pos in line:
+            line_num = i
+            break
+
+    if line_num == -1:
+        #this is the first instance of this pos
+        for i in range(0,len(dic),-1):
+            if "</section>" in dic[i]:
+                line_num = i
+
+    dic.insert(line_num, entry)
 
 def approve_entries(entries, dictionary):
     """
@@ -96,23 +126,55 @@ def build_entry(langL_word, langR_word, langL_lex_tags, langR_lex_tags):
         given two word objects and two lists of lexical tags builds an xml
         dictionary entry
     """
-    start = "<e><p><l>" + langL_word.word
+    start = "\t <e><p><l>" + langL_word.word
     end = "</r></p></e>"
     mid = "</l><r>" + langR_word.word
 
+    #which analysis to use for entry
+    index = 0
 
     #fill in tags on left side
-    for tag in langL_word.analyses[0]: #TODO replace that zero with something good
+    for tag in langL_word.analyses[index]: #TODO replace that zero with something good
         if tag in langL_lex_tags:
             start += "<s n=\"" + tag  + "\"/>"
 
-    for tag in langR_word.analyses[0]: #TODO replace zero with something good
+    for tag in langR_word.analyses[index]: #TODO replace zero with something good
         if tag in langR_lex_tags:
             end = "<s n=\"" + tag  + "\"/>" + end
 
-    entry = start + mid + end
+    entry = start + mid + end + "\n"
 
     return entry
+
+
+def read_dictionary(filename):
+    """
+    reads a dictioary file into a list of lines
+    """
+    try:
+        f = open(filename, "r")
+    except(IOError):
+        print("Could not open dictionary file")
+        exit(1)
+
+    dic = f.readlines()
+    f.close()
+
+    return dic
+
+def rewrite_dictionary(dictionary, filename ):
+    """
+    takes in a list of lines and writes them to a given filename
+    """
+    try:
+        f = open(filename, "w")
+    except(IOError):
+        print("Could not open dictionary file")
+        exit(1)
+
+    f.writelines(dictionary)
+    f.close()
+
 
 def parse_lex_tags(filename):
     """

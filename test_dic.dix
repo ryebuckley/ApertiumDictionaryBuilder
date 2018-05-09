@@ -1,0 +1,206 @@
+<section id="main" type="standard">
+   <!-- Define entries within <e> here. -->
+   <!-- nouns -->
+	 <e><p><l>girl<s n="n"/></l><r>chico<s n="n"/></r></p></e>
+   <e><p><l>pige<s n="n"/><s n="ut"/></l><r>girl<s n="n"/></r></p></e>
+   <e><p><l>hus<s n="n"/><s n="nt"/></l><r>house<s n="n"/></r></p></e>
+   <e><p><l>ged<s n="n"/><s n="ut"/></l><r>goat<s n="n"/></r></p></e>
+   <e><p><l>dag<s n="n"/><s n="ut"/></l><r>day<s n="n"/></r></p></e>
+   <e><p><l>hjem<s n="n"/><s n="nt"/></l><r>home<s n="n"/></r></p></e>
+   <e><p><l>dreng<s n="n"/><s n="ut"/></l><r>boy<s n="n"/></r></p></e>
+   <e><p><l>fader<s n="n"/><s n="ut"/></l><r>father<s n="n"/></r></p></e>
+   <e><p><l>kong<s n="n"/><s n="ut"/></l><r>king<s n="n"/></r></p></e>
+   <e><p><l>skov<s n="n"/><s n="ut"/></l><r>forest<s n="n"/></r></p></e>
+   <e><p><l>skade<s n="n"/><s n="ut"/></l><r>damage<s n="n"/></r></p></e>
+   <e><p><l>nat<s n="n"/><s n="ut"/></l><r>night<s n="n"/></r></p></e>
+   <e><p><l>mave<s n="n"/><s n="ut"/></l><r>stomach<s n="n"/></r></p></e>
+   <!-- a male person -->
+   <e><p><l>mand<s n="n"/><s n="ut"/></l><r>man<s n="n"/></r></p></e>
+   <!-- mankind -->
+   <e><p><l>menneske<s n="n"/><s n="nt"/></l><r>man<s n="n"/></r></p></e>
+   <e><p><l>kone<s n="n"/><s n="ut"/></l><r>wife<s n="n"/></r></p></e>
+   <e><p><l>hustru<s n="n"/><s n="ut"/></l><r>wife<s n="n"/></r></p></e>
+   <!-- a a salty droplet from your eye -->
+   <e><p><l>tåre<s n="n"/><s n="ut"/></l><r>tear<s n="n"/></r></p></e>
+   <!-- a rip -->
+   <e><p><l>flænge<s n="n"/><s n="ut"/></l><r>tear<s n="n"/></r></p></e>
+   <e><p><l>skrig<s n="n"/><s n="nt"/></l><r>scream<s n="n"/></r></p></e>
+   <e><p><l>mur<s n="n"/><s n="ut"/></l><r>wall<s n="n"/></r></p></e>
+   <e><p><l>bjerg<s n="n"/><s n="nt"/></l><r>mountain<s n="n"/></r></p></e>
+   <e><p><l>flaske<s n="n"/><s n="ut"/></l><r>bottle<s n="n"/></r></p></e>
+   <e><p><l>mor<s n="n"/><s n="ut"/></l><r>mother<s n="n"/></r></p></e>
+   <e><p><l>ulv<s n="n"/><s n="ut"/></l><r>wolf<s n="n"/></r></p></e>
+   <e><p><l>morgen<s n="n"/><s n="ut"/></l><r>morning<s n="n"/></r></p></e>
+   <e><p><l>ild<s n="n"/><s n="ut"/></l><r>fire<s n="n"/></r></p></e>
+   <e><p><l>hoved<s n="n"/><s n="nt"/></l><r>head<s n="n"/></r></p></e>
+   <e><p><l>land<s n="n"/><s n="nt"/></l><r>land<s n="n"/></r></p></e>
+   <e><p><l>dør<s n="n"/><s n="ut"/></l><r>door<s n="n"/></r></p></e>
+   <e><p><l>stak<s n="n"/><s n="ut"/></l><r>stack<s n="n"/></r></p></e>
+   <e><p><l>lov<s n="n"/><s n="ut"/></l><r>law<s n="n"/></r></p></e>
+   <e><p><l>vej<s n="n"/><s n="ut"/></l><r>way<s n="n"/></r></p></e>
+
+   <!-- adj -->
+   <e><p><l>stor<s n="adj"/></l><r>big<s n="adj"/></r></p></e>
+   <e><p><l>gammel<s n="adj"/></l><r>old<s n="adj"/></r></p></e>
+   <e><p><l>lang<s n="adj"/></l><r>long<s n="adj"/></r></p></e>
+   <e><p><l>høj<s n="adj"/></l><r>tall<s n="adj"/></r></p></e>
+   <e><p><l>høj<s n="adj"/></l><r>high<s n="adj"/></r></p></e>
+   <e><p><l>høj<s n="adj"/></l><r>loud<s n="adj"/></r></p></e>
+   <e><p><l>ung<s n="adj"/></l><r>young<s n="adj"/></r></p></e>
+   <e><p><l>lille<s n="adj"/></l><r>little<s n="adj"/></r></p></e>
+   <e><p><l>eneste<s n="adj"/></l><r>only<s n="adj"/></r></p></e>
+   <e><p><l>trist<s n="adj"/></l><r>sad<s n="adj"/></r></p></e>
+   <e><p><l>slet<s n="adj"/></l><r>bad<s n="adj"/></r></p></e>
+   <e><p><l>lige<s n="adj"/></l><r>equal<s n="adj"/></r></p></e>
+   <e><p><l>rigtig<s n="adj"/></l><r>correct<s n="adj"/></r></p></e>
+   <e><p><l>næste<s n="adj"/></l><r>next<s n="adj"/></r></p></e>
+   <e><p><l>først<s n="adj"/></l><r>first<s n="adj"/></r></p></e>
+   <e><p><l>rød<s n="adj"/></l><r>red<s n="adj"/></r></p></e>
+   <e><p><l>hvid<s n="adj"/></l><r>white<s n="adj"/></r></p></e>
+   <e><p><l>rund<s n="adj"/></l><r>round<s n="adj"/></r></p></e>
+   <e><p><l>bange<s n="adj"/></l><r>afraid<s n="adj"/></r></p></e>
+   <e><p><l>dejlig<s n="adj"/></l><r>lovely<s n="adj"/></r></p></e>
+   <e><p><l>sidst<s n="adj"/></l><r>last<s n="adj"/></r></p></e>
+   <e><p><l>god<s n="adj"/></l><r>good<s n="adj"/></r></p></e>
+   <e><p><l>stille<s n="adj"/></l><r>silent<s n="adj"/></r></p></e>
+
+   <!-- verbs -->
+   <e><p><l>spise<s n="vblex"/></l><r>eat<s n="vblex"/></r></p></e>
+   <e><p><l>hugge<s n="vblex"/></l><r>chop<s n="vblex"/></r></p></e>
+   <e><p><l>skade<s n="vblex"/></l><r>damage<s n="vblex"/></r></p></e>
+   <e><p><l>blive<s n="vblex"/></l><r>become<s n="vblex"/></r></p></e>
+   <e><p><l>give<s n="vblex"/></l><r>give<s n="vblex"/></r></p></e>
+   <e><p><l>gå<s n="vblex"/></l><r>go<s n="vblex"/></r></p></e>
+   <e><p><l>trave<s n="vblex"/></l><r>trudge<s n="vblex"/></r></p></e>
+   <e><p><l>forlange<s n="vblex"/></l><r>require<s n="vblex"/></r></p></e>
+   <e><p><l>tænke<s n="vblex"/></l><r>think<s n="vblex"/></r></p></e>
+   <e><p><l>fejre<s n="vblex"/></l><r>celebrate<s n="vblex"/></r></p></e>
+   <e><p><l>komme<s n="vblex"/></l><r>come<s n="vblex"/></r></p></e>
+   <e><p><l>sige<s n="vblex"/></l><r>say<s n="vblex"/></r></p></e>
+   <!-- <e><p><l>rive<s n="vblex"/></l><r>tear<s n="vblex"/></r></p></e> -->
+   <e><p><l>falde<s n="vblex"/></l><r>fall<s n="vblex"/></r></p></e>
+   <e><p><l>løbe<s n="vblex"/></l><r>run<s n="vblex"/></r></p></e>
+   <e><p><l>sætte<s n="vblex"/></l><r>sit<s n="vblex"/></r></p></e>
+   <e><p><l>have<s n="vbhaver"/></l><r>have<s n="vbhaver"/></r></p></e>
+   <e><p><l>kunne<s n="vbmod"/></l><r>can<s n="vbmod"/></r></p></e>
+   <e><p><l>gange<s n="vblex"/></l><r>walk<s n="vblex"/></r></p></e>
+   <e><p><l>ville<s n="vaux"/></l><r>want<s n="vblex"/></r></p></e>
+   <e><p><l>ville<s n="vaux"/></l><r>will<s n="vbmod"/></r></p></e>
+   <e><p><l>skulle<s n="vbmod"/></l><r>shall<s n="vbmod"/></r></p></e>
+   <e><p><l>begynde<s n="vblex"/></l><r>begin<s n="vblex"/></r></p></e>
+   <e><p><l>svare<s n="vblex"/></l><r>reply<s n="vblex"/></r></p></e>
+   <e><p><l>more<s n="vblex"/></l><r>amuse<s n="vblex"/></r></p></e>
+   <e><p><l>sidde<s n="vblex"/></l><r>sat<s n="vblex"/></r></p></e>
+   <e><p><l>slette<s n="vblex"/></l><r>erase<s n="vblex"/></r></p></e>
+   <e><p><l>råbe<s n="vblex"/></l><r>shout<s n="vblex"/></r></p></e>
+   <e><p><l>gøre<s n="vblex"/></l><r>do<s n="vblex"/></r></p></e>
+   <e><p><l>høre<s n="vblex"/></l><r>hear<s n="vblex"/></r></p></e>
+   <e><p><l>spørge<s n="vblex"/></l><r>ask<s n="vblex"/></r></p></e>
+   <e><p><l>lægge<s n="vblex"/></l><r>put<s n="vblex"/></r></p></e>
+   <e><p><l>tage<s n="vblex"/></l><r>take<s n="vblex"/></r></p></e>
+   <e><p><l>støde<s n="vblex"/></l><r>push<s n="vblex"/></r></p></e>
+   <e><p><l>stå<s n="vblex"/></l><r>stand<s n="vblex"/></r></p></e>
+   <e><p><l>holde<s n="vblex"/></l><r>hold<s n="vblex"/></r></p></e>
+   <e><p><l>kaste<s n="vblex"/></l><r>throw<s n="vblex"/></r></p></e>
+   <e><p><l>stakke<s n="vblex"/></l><r>stack<s n="vblex"/></r></p></e>
+   <e><p><l>slå<s n="vblex"/></l><r>hit<s n="vblex"/></r></p></e>
+   <e><p><l>love<s n="vblex"/></l><r>promise<s n="vblex"/></r></p></e>
+   <e><p><l>se<s n="vblex"/></l><r>see<s n="vblex"/></r></p></e>
+   <e><p><l>stille<s n="vblex"/></l><r>put<s n="vblex"/></r></p></e>
+
+   <!-- pronouns -->
+   <e><p>
+     <l>hun<s n="prn"/><s n="pers"/><s n="p3"/><s n="f"/><s n="sg"/></l>
+     <r>prpers<s n="prn"/><s n="p3"/><s n="f"/><s n="sg"/></r>
+   </p></e>
+   <e><p>
+     <l>han<s n="prn"/><s n="pers"/><s n="p3"/><s n="m"/><s n="sg"/></l>
+     <r>prpers<s n="prn"/><s n="p3"/><s n="m"/><s n="sg"/></r>
+   </p></e>
+   <e><p>
+     <l>sig<s n="prn"/><s n="ref"/><s n="p3"/></l>
+     <r>themself<s n="prn"/><s n="ref"/><s n="p3"/><s n="mf"/><s n="sg"/></r>
+   </p></e>
+   <e><p>
+     <l>sig<s n="prn"/><s n="ref"/><s n="p3"/></l>
+     <r>themselves<s n="prn"/><s n="ref"/><s n="p3"/><s n="mf"/><s n="pl"/></r>
+   </p></e>
+   <e><p>
+     <l>sig<s n="prn"/><s n="ref"/><s n="p3"/></l>
+     <r>himself<s n="prn"/><s n="ref"/><s n="p3"/><s n="m"/><s n="sg"/></r>
+   </p></e>
+   <e><p>
+     <l>sig<s n="prn"/><s n="ref"/><s n="p3"/></l>
+     <r>herself<s n="prn"/><s n="ref"/><s n="p3"/><s n="f"/><s n="sg"/></r>
+   </p></e>
+   <e><p><l>nogen<s n="prn"/><s n="ind"/></l><r>something<s n="prn"/><s n="ind"/></r></p></e>
+   <e><p><l>den<s n="prn"/><s n="pers"/><s n="p3"/></l><r>prpers<s n="prn"/><s n="pers"/>
+   <s n="subj"/><s n="p3"/><s n="nt"/></r></p></e>
+   <e><p><l>du<s n="prn"/><s n="pers"/><s n="p2"/><s n="ut"/></l><r>you<s n="prn"/><s n="pers"/>
+   <s n="p2"/><s n="mf"/></r></p></e>
+   <e><p><l>jeg<s n="prn"/><s n="pers"/><s n="p1"/><s n="ut"/><s n="sg"/></l><r>prpers<s n="prn"/>
+   <s n="subj"/><s n="p1"/><s n="mf"/><s n="sg"/></r></p></e>
+   <e><p><l>de<s n="prn"/><s n="pers"/><s n="p3"/><s n="un"/><s n="pl"/></l><r>prpers<s n="prn"/>
+   <s n="subj"/><s n="p3"/><s n="mf"/><s n="pl"/></r></p></e>
+
+   <!-- conjunctions -->
+   <e><p><l>og<s n="cnjcoo"/></l><r>and<s n="cnjcoo"/></r></p></e>
+   <e><p><l>men<s n="cnjcoo"/></l><r>but<s n="cnjcoo"/></r></p></e>
+   <e><p><l>eller<s n="cnjcoo"/></l><r>or<s n="cnjcoo"/></r></p></e>
+
+   <!-- prepositions and particles  -->
+   <e><p><l>at<s n="part"/></l><r>to<s n="pr"/></r></p></e>
+   <e><p><l>om<s n="pr"/></l><r>about<s n="pr"/></r></p></e>
+   <e><p><l>i<s n="pr"/></l><r>in<s n="pr"/></r></p></e>
+   <e><p><l>af<s n="pr"/></l><r>of<s n="pr"/></r></p></e>
+   <e><p><l>ned<s n="pr"/></l><r>down<s n="pr"/></r></p></e>
+   <e><p><l>med<s n="pr"/></l><r>with<s n="pr"/></r></p></e>
+   <e><p><l>ind<s n="pr"/></l><r>in<s n="pr"/></r></p></e>
+   <e><p><l>op<s n="pr"/></l><r>up<s n="pr"/></r></p></e>
+   <e><p><l>på<s n="pr"/></l><r>on<s n="pr"/></r></p></e>
+   <e><p><l>til<s n="pr"/></l><r>of<s n="pr"/></r></p></e>
+   <e><p><l>som<s n="pr"/></l><r>as<s n="pr"/></r></p></e>
+   <e><p><l>hen<s n="pr"/></l><r>to<s n="pr"/></r></p></e>
+   <e><p><l>efter<s n="pr"/></l><r>after<s n="pr"/></r></p></e>
+
+   <!-- determiners -->
+   <e><p><l>en<s n="det"/></l><r>a<s n="det"/></r></p></e>
+   <e><p><l>den<s n="det"/><s n="dem"/></l><r>the<s n="det"/><s n="def"/></r></p></e>
+   <e><p><l>nogen<s n="det"/><s n="qnt"/></l><r>some<s n="det"/><s n="qnt"/></r></p></e>
+   <e><p><l>mange<s n="det"/><s n="qnt"/></l><r>many<s n="det"/><s n="qnt"/></r></p></e>
+   <e><p><l>min<s n="det"/><s n="pos"/><s n="p1"/><s n="sg"/></l><r>my<s n="det"/><s n="pos"/><s n="sp"/></r></p></e>
+
+   <!-- numbers -->
+   <e><p><l>en<s n="num"/><s n="sg"/></l><r>one<s n="num"/><s n="sg"/></r></p></e>
+   <e><p><l>to<s n="num"/><s n="pl"/></l><r>two<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>tre<s n="num"/><s n="pl"/></l><r>three<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>fire<s n="num"/><s n="pl"/></l><r>four<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>fem<s n="num"/><s n="pl"/></l><r>five<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>seks<s n="num"/><s n="pl"/></l><r>six<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>syv<s n="num"/><s n="pl"/></l><r>seven<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>otte<s n="num"/><s n="pl"/></l><r>eight<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>ni<s n="num"/><s n="pl"/></l><r>nine<s n="num"/><s n="pl"/></r></p></e>
+   <e><p><l>ti<s n="num"/><s n="pl"/></l><r>ten<s n="num"/><s n="pl"/></r></p></e>
+
+   <!-- adverbs -->
+   <e><p><l>der<s n="adv"/></l><r>there<s n="adv"/></r></p></e>
+   <e><p><l>ikke<s n="adv"/></l><r>not<s n="adv"/></r></p></e>
+   <e><p><l>nu<s n="adv"/></l><r>now<s n="adv"/></r></p></e>
+   <e><p><l>ud<s n="adv"/></l><r>out<s n="adv"/></r></p></e>
+   <!-- There are some other definitions of så -->
+   <e><p><l>så<s n="adv"/></l><r>then<s n="adv"/></r></p></e>
+   <e><p><l>da<s n="adv"/></l><r>then<s n="adv"/></r></p></e>
+   <e><p><l>dog<s n="adv"/></l><r>however<s n="adv"/></r></p></e>
+   <e><p><l>nok<s n="adv"/></l><r>enough<s n="adv"/></r></p></e>
+   <e><p><l>også<s n="adv"/></l><r>also<s n="adv"/></r></p></e>
+   <e><p><l>hvor<s n="adv"/></l><r>where<s n="adv"/></r></p></e>
+   <e><p><l>hvordan<s n="adv"/></l><r>how<s n="adv"/></r></p></e>
+   <e><p><l>bare<s n="adv"/></l><r>just<s n="adv"/></r></p></e>
+   <e><p><l>igen<s n="adv"/></l><r>again<s n="adv"/></r></p></e>
+   <e><p><l>stille<s n="adv"/></l><r>quietly<s n="adv"/></r></p></e>
+   <e><p><l>her<s n="adv"/></l><r>here<s n="adv"/></r></p></e>
+
+   <e><re>[.\?;:!…¿¶]</re><p><l><s n="sent"/></l><r><s n="sent"/></r></p></e>
+   <e><re>,</re>          <p><l><s n="cm"/></l>  <r><s n="cm"/></r></p></e>
+	 <e><p><l>be<s n="vbser"/></l><r>ser<s n="vbser"/></r></p></e>
+</section>

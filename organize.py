@@ -144,13 +144,12 @@ def evalCoverage(wd_ls, matched):
 
     for e in matched:
         for pair in e.matches:
-            print "Matched (%s, %s) at indices (%d, %d)" % (
-            e.word, e.word, pair[0], pair[1]
-        )
+            print("Matched (%s, %s) at indices (%d, %d)" % ( \
+            e.word, e.word, pair[0], pair[1] ))
 
     match_count = sum([w.getNumMatches() for w in matched])
     pct = float(match_count) / len(wd_ls)
-    print "Percentage matched: %.3f" % pct
+    print("Percentage matched: %.3f" % pct)
 
 def reduceParagraph(used_words, word_ls):
     """Take out already matched words from list of word instances
