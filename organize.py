@@ -295,7 +295,7 @@ def createPieChart(vals, total_sents):
     """
 
     remaining = total_sents - vals[-1]
-    labels = ["initial", "synonym", "stopwords", "remaining"]
+    labels = ["direct translation", "synonym", "stopwords", "remaining"]
     vals[1] -= vals[0]
     vals[2] -= vals [0] - vals[1]
     sizes = [l / float(total_sents) for l in vals]
