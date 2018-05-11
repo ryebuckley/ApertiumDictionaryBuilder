@@ -1,15 +1,20 @@
 from subprocess import Popen, PIPE
-import urllib.request, os, nltk
+import urllib.request, os, nltk, sys
 from nltk.corpus import stopwords
+import matplotlib.pyplot as plt
+
+import matplotlib
+matplotlib.rcParams['font.size'] = 20.0
 
 from word import Word
 from entry import Entry
 
-ENGLISH_TEXT =  'corpora/udhr.en' # 'corpora/test.en' # "corpora/littleredridinghood.en"
-SPANISH_TEXT =  'corpora/udhr.sp' # 'corpora/test.sp' # "corpora/littleredridinghood.es"
+ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/udhr.en' # 'corpora/test.en'
+SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/udhr.sp' # 'corpora/test.sp'
 EN_ES_PATH = "../apertium/apertium-en-es/"
 EN_PATH = "../apertium/apertium-eng/"
 BASE_URL = "http://swoogle.umbc.edu/SimService/GetSimilarity?operation=api&"
+PIE_OUT_FILE = "analysis_pie.png"
 
 DEFAULT_THRESH = 0.2
 THRESH_DICT = {
@@ -20,14 +25,19 @@ STOP_WORDS = list(stopwords.words('english'))
 
 def main():
 
+    print("\nWelcome to our text aligner\n")
+
     eng = readData(ENGLISH_TEXT, EN_PATH, "eng-tagger")
     sp_trans = readData(SPANISH_TEXT, EN_ES_PATH, "es-en-postchunk")
 
     eng_sents = getSentences(eng)
     sp_trans_sents = getSentences(sp_trans)
 
+    total_eng_sents = sum([len(sent) for sent in eng_sents])
+
     # assert(len(eng_sents) == len(sp_trans_sents))
 
+    pie_chart_vals = []
     total_matches = []
     eng_reduced, sp_reduced = [], []
     for i in range(len(eng_sents)):
@@ -37,12 +47,17 @@ def main():
 
         match_count = sum([w.getNumMatches() for w in entries])
         total_matches.append(match_count)
-        evalCoverage(eng, match_count, "Initial match percentage: ")
+        evalCoverage(len(eng), match_count, "\tInitial match percentage: ")
         eng_red = reduceParagraph(used_words, eng_words)
         sp_red = reduceParagraph(used_words, sp_words)
 
         eng_reduced.append(eng_red)
         sp_reduced.append(sp_red)
+
+    print("")
+    evalCoverage(total_eng_sents, sum(total_matches), "Total initial match percentage: ")
+    pie_chart_vals.append(sum(total_matches))
+    print("")
 
     ### now tag comparison phase / synonym analysis
 
@@ -51,7 +66,7 @@ def main():
         eng_red, sp_red = eng_reduced[i], sp_reduced[i]
         matches = checkSynonmyms(eng_red, sp_red)
         total_matches[i] += len(matches)
-        evalCoverage(eng_sents[i], total_matches[i], "After synonym analysis: ")
+        evalCoverage(len(eng_sents[i]), total_matches[i], "\tAfter synonym analysis: ")
 
         used_words_eng = list(set([m[0].word for m in matches]))
         used_words_sp = [m[1].word for m in matches]
@@ -62,6 +77,11 @@ def main():
         eng_syn_reduced.append(eng_2_reduced)
         sp_syn_reduced.append(sp_2_reduced)
 
+    print("")
+    evalCoverage(total_eng_sents, sum(total_matches), "Total synonym match percentage: ")
+    pie_chart_vals.append(sum(total_matches))
+    print("")
+
     ### now remove common words
 
     eng_final, sp_final = [], []
@@ -69,12 +89,23 @@ def main():
         eng_final_red = list(set(reduceParagraph(STOP_WORDS, eng_2_reduced)))
         sp_final_red = list(set(reduceParagraph(STOP_WORDS, sp_2_reduced)))
 
+        num_removed_words = len(eng_2_reduced) - len(eng_final_red)
+        total_matches[i] += num_removed_words
+
         eng_final.append(eng_final_red)
         sp_final.append(sp_final_red)
 
-    print(eng_final[0])
-    print('\n')
-    print(sp_final[0])
+    evalCoverage(total_eng_sents, sum(total_matches), "Final match percentage: ")
+    pie_chart_vals.append(sum(total_matches))
+    print("")
+
+    print("Unmatched engligh words: ")
+    print(list(set([w for paragraph in eng_final for w in paragraph])))
+    print('')
+    print("Unmatched spanish words: ")
+    print(list(set([w for paragraph in sp_final for w in paragraph])))
+
+    createPieChart(pie_chart_vals, total_eng_sents)
 
 
 def readData(text, apertium_path, apertium_command):
@@ -173,20 +204,16 @@ def directCompare(eng, sp):
 
     return pairs
 
-def evalCoverage(wd_ls, match_count, message):
+def evalCoverage(wd_ls_len, match_count, message):
     """Evaluate how well matching did
-    params: wd_ls   -   all words in corpus
+    params: wd_ls   -   length of all words in corpus or paragraph
             match_count -   number of matches
             message     -   to be printed out to user
     returns: nothing; prints statistic
     """
 
-    pct = float(match_count) / len(wd_ls)
-<<<<<<< HEAD
-    print("Percentage matched: %.3f" % pct)
-=======
+    pct = float(match_count) / wd_ls_len
     print(message + "%.3f" % pct)
->>>>>>> 8b7bc0bada7fc42d3e801170256925e1ceeb68ef
 
 def reduceParagraph(used_words, word_ls):
     """Take out already matched words from list of word instances
@@ -240,18 +267,48 @@ def checkSynonmyms(eng_list, sp_list):
 
     return matches
 
-
 def getPartsOfSpeech(w):
+    """Get first lemma/lemmae for a give Word instance
+    params: w   -   Word instance
+    returns: list of parts of speech
+    """
 
     return [ls[0] for ls in w.analyses if ls]
 
 def compareLists(ls1, ls2):
+    """Compare two lists to see if there are any matches
+    params: ls1 & ls2   -   two lists
+    returns: matches    -   list of common elements in ls1 and ls2
+    """
 
     matches = []
     for item in ls1:
         if item in ls2:
             matches.append(item)
     return matches
+
+def createPieChart(vals, total_sents):
+    """Create pie chart of matching progress
+    params: vals    -   list of numbers of matches at each step of main()
+            total_sents   -   total number of sentences
+    returns: nothing; creates pie chart
+    """
+
+    remaining = total_sents - vals[-1]
+    labels = ["initial", "synonym", "stopwords", "remaining"]
+    vals[1] -= vals[0]
+    vals[2] -= vals [0] - vals[1]
+    sizes = [l / float(total_sents) for l in vals]
+    sizes.append(remaining / float(total_sents))
+    explode = [0, 0, 0, 0.1]
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax.axis('equal')
+    # ax.set_title('Breakdown of Text Aligner Analysis')
+
+    plt.savefig(PIE_OUT_FILE)
 
 if __name__ == '__main__':
     main()
