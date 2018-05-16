@@ -1,4 +1,5 @@
 from subprocess import Popen, PIPE
+import optparse
 import urllib.request, os, nltk, sys
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
@@ -8,11 +9,12 @@ matplotlib.rcParams['font.size'] = 20.0
 
 from word import Word
 from entry import Entry
+from interface_helpers import *
 
-ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/udhr.en' # 'corpora/test.en'
-SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/udhr.sp' # 'corpora/test.sp'
-EN_ES_PATH = "../apertium/apertium-en-es/"
-EN_PATH = "../apertium/apertium-eng/"
+#ENGLISH_TEXT = "corpora/littleredridinghood.en" # 'corpora/udhr.en' # 'corpora/test.en'
+#SPANISH_TEXT = "corpora/littleredridinghood.es" # 'corpora/udhr.sp' # 'corpora/test.sp'
+#EN_ES_PATH = "../apertium/apertium-en-es/"
+#EN_PATH = "../apertium/apertium-eng/"
 BASE_URL = "http://swoogle.umbc.edu/SimService/GetSimilarity?operation=api&"
 PIE_OUT_FILE = "analysis_pie.png"
 
@@ -21,91 +23,92 @@ THRESH_DICT = {
     'vblex': 0.7,
     'vbmod': 0.7,
 }
+
 STOP_WORDS = list(stopwords.words('english'))
 
 def main():
 
     print("\nWelcome to our text aligner\n")
 
-    eng = readData(ENGLISH_TEXT, EN_PATH, "eng-tagger")
-    sp_trans = readData(SPANISH_TEXT, EN_ES_PATH, "es-en-postchunk")
+    dictionary, L_lex_tags, R_lex_tags, Lcorpus, Rcorpus, Llanguage, Rlanguage, bilanguage, Ltransducer, Ttransducer, dict_file = startup()
 
-    eng_sents = getSentences(eng)
-    sp_trans_sents = getSentences(sp_trans)
+    left = readData(Lcorpus, Ltransducer, Llanguage + "-tagger")
+    right_trans = readData(Rcorpus, Ttransducer, bilanguage + "-postchunk")
 
-    total_eng_sents = sum([len(sent) for sent in eng_sents])
+    left_sents = getSentences(left)
+    right_trans_sents = getSentences(right_trans)
 
-    # assert(len(eng_sents) == len(sp_trans_sents))
+    total_left_sents = sum([len(sent) for sent in left_sents])
+
+    # assert(len(left_sents) == len(right_trans_sents))
 
     pie_chart_vals = []
     total_matches = []
-    eng_reduced, sp_reduced = [], []
-    for i in range(len(eng_sents)):
-        eng, sp = eng_sents[i], sp_trans_sents[i]
-        entries, eng_words, sp_words = compareParagraph(eng, sp)
+    left_reduced, right_reduced = [], []
+    for i in range(len(left_sents)):
+        left, right = left_sents[i], right_trans_sents[i]
+        entries, left_words, right_words = compareParagraph(left, right)
         used_words = [w.word for w in entries]
 
         match_count = sum([w.getNumMatches() for w in entries])
         total_matches.append(match_count)
-        evalCoverage(len(eng), match_count, "\tInitial match percentage: ")
-        eng_red = reduceParagraph(used_words, eng_words)
-        sp_red = reduceParagraph(used_words, sp_words)
+        left_red = reduceParagraph(used_words, left_words)
+        right_red = reduceParagraph(used_words, right_words)
 
-        eng_reduced.append(eng_red)
-        sp_reduced.append(sp_red)
+        left_reduced.append(left_red)
+        right_reduced.append(right_red)
 
     print("")
-    evalCoverage(total_eng_sents, sum(total_matches), "Total initial match percentage: ")
+    evalCoverage(total_left_sents, sum(total_matches), "Total initial match percentage: ")
     pie_chart_vals.append(sum(total_matches))
     print("")
 
     ### now tag comparison phase / synonym analysis
 
-    eng_syn_reduced, sp_syn_reduced = [], []
-    for i in range(len(eng_reduced)):
-        eng_red, sp_red = eng_reduced[i], sp_reduced[i]
-        matches = checkSynonmyms(eng_red, sp_red)
+    left_syn_reduced, right_syn_reduced = [], []
+    for i in range(len(left_reduced)):
+        left_red, left_red = left_reduced[i], right_reduced[i]
+        matches = checkSynonmyms(left_red, right_red)
         total_matches[i] += len(matches)
-        evalCoverage(len(eng_sents[i]), total_matches[i], "\tAfter synonym analysis: ")
 
-        used_words_eng = list(set([m[0].word for m in matches]))
-        used_words_sp = [m[1].word for m in matches]
+        used_words_left = list(set([m[0].word for m in matches]))
+        used_words_right = [m[1].word for m in matches]
 
-        eng_2_reduced = reduceParagraph(used_words_eng, eng_red)
-        sp_2_reduced = reduceParagraph(used_words_sp, sp_red)
+        left_2_reduced = reduceParagraph(used_words_left, left_red)
+        right_2_reduced = reduceParagraph(used_words_right, right_red)
 
-        eng_syn_reduced.append(eng_2_reduced)
-        sp_syn_reduced.append(sp_2_reduced)
+        left_syn_reduced.append(left_2_reduced)
+        right_syn_reduced.append(right_2_reduced)
 
     print("")
-    evalCoverage(total_eng_sents, sum(total_matches), "Total synonym match percentage: ")
+    evalCoverage(total_left_sents, sum(total_matches), "Total synonym match percentage: ")
     pie_chart_vals.append(sum(total_matches))
     print("")
 
     ### now remove common words
 
-    eng_final, sp_final = [], []
-    for i in range(len(eng_syn_reduced)):
-        eng_final_red = list(set(reduceParagraph(STOP_WORDS, eng_2_reduced)))
-        sp_final_red = list(set(reduceParagraph(STOP_WORDS, sp_2_reduced)))
+    left_final, right_final = [], []
+    for i in range(len(left_syn_reduced)):
+        left_final_red = list(set(reduceParagraph(STOP_WORDS, left_2_reduced)))
+        right_final_red = list(set(reduceParagraph(STOP_WORDS, right_2_reduced)))
 
-        num_removed_words = len(eng_2_reduced) - len(eng_final_red)
+        num_removed_words = len(left_2_reduced) - len(left_final_red)
         total_matches[i] += num_removed_words
 
-        eng_final.append(eng_final_red)
-        sp_final.append(sp_final_red)
+        left_final.append(left_final_red)
+        right_final.append(right_final_red)
 
-    evalCoverage(total_eng_sents, sum(total_matches), "Final match percentage: ")
+    evalCoverage(total_left_sents, sum(total_matches), "Final match percentage: ")
     pie_chart_vals.append(sum(total_matches))
     print("")
 
-    print("Unmatched engligh words: ")
-    print(list(set([w for paragraph in eng_final for w in paragraph])))
+    print("Unmatched left words: ")
+    print(list(set([w for paragraph in left_final for w in paragraph])))
     print('')
-    print("Unmatched spanish words: ")
-    print(list(set([w for paragraph in sp_final for w in paragraph])))
+    print("Unmatched right words: ")
+    print(list(set([w for paragraph in right_final for w in paragraph])))
 
-    createPieChart(pie_chart_vals, total_eng_sents)
+    createPieChart(pie_chart_vals, total_left_sents)
 
 
 def readData(text, apertium_path, apertium_command):
@@ -144,20 +147,20 @@ def getSentences(text):
 
     return sents
 
-def compareParagraph(eng, sp):
+def compareParagraph(left, right):
     """Direct comparison of same words in both texts
-    params: eng -   english tagged sentences
-            sp  -   spanish translated tagged senteces
+    params: left -   left tagged sentences
+            right  -   right translated tagged senteces
     returns: nothing; prints evaluation statistic
     """
 
-    eng_words = translateParagraph(eng)
-    sp_words = translateParagraph(sp)
+    left_words = translateParagraph(left)
+    right_words = translateParagraph(right)
 
-    # print eng_words
-    # print sp_words
+    # print left_words
+    # print right_words
 
-    pairs = directCompare(eng_words, sp_words)
+    pairs = directCompare(left_words, right_words)
 
     seen_words, entries = [], []
     for i, p in enumerate(pairs):
@@ -165,17 +168,17 @@ def compareParagraph(eng, sp):
             e = Entry(p[0])
             entries.append(e)
             seen_words.append(p[0])
-            e.addSpanishIndices(p[2])
+            e.addRightIndices(p[2])
         else:
             for ent in entries:
                 if ent.word == p[0]:
                     e = ent
-        e.addEnglighIndex(p[1])
+        e.addLeftIndex(p[1])
 
     for e in entries:
         e.collectMatches()
 
-    return entries, eng_words, sp_words
+    return entries, left_words, right_words
 
 def translateParagraph(p):
     """Make each word from paragraph a Word instance
@@ -185,17 +188,17 @@ def translateParagraph(p):
 
     return [Word(w, i) for i, w in enumerate(p)]
 
-def directCompare(eng, sp):
-    """Pair up words translated to the same words in english
-    params: eng -   list of word objects for english words
-            sp  -   list of word objects from translated sp to eng
+def directCompare(left, right):
+    """Pair up words translated to the same words in left language
+    params: left -   list of word objects for left words
+            right  -   list of word objects from translated right to left
     returns: pairs  -   [matched word, index of matched word, translated match indices]
     """
 
     pairs = []
-    for i, w1 in enumerate(eng):
+    for i, w1 in enumerate(left):
         curr_indices = []
-        for j, w2 in enumerate(sp):
+        for j, w2 in enumerate(right):
             if w1.word == w2.word:
                 curr_indices.append(j)
 
@@ -234,30 +237,33 @@ def createURL(w1, w2):
     w2 = w2.word.replace(' ', '%20')
     w1 = w1.replace('#', '')
     w2 = w2.replace('#', '')
-    return BASE_URL + 'phrase1=' + w1 + '&' + 'phrase2=' + w2
+    w1 = urllib.parse.quote(w1)
+    w2 = urllib.parse.quote(w2)
+    url = BASE_URL + 'phrase1=' + w1 + '&' + 'phrase2=' + w2
+    return url
 
-def checkSynonmyms(eng_list, sp_list):
+def checkSynonmyms(left_list, right_list):
     """Checks for synonyms in two lists of word instances
-    params: eng_list    -   list of word instances in english
-            sp_list     -   list of word instances from translated spanish
+    params: left_list    -   list of word instances in left language
+            right_list     -   list of word instances from translated right language
     returns:
     """
 
     matches = []
-    for i, w1 in enumerate(eng_list):
+    for i, w1 in enumerate(left_list):
         base_pos = getPartsOfSpeech(w1)
 
-        for j, w2 in enumerate(sp_list):
+        for j, w2 in enumerate(right_list):
             sub_pos = getPartsOfSpeech(w2)
 
             # compare parts of speech
             same_pos = compareLists(base_pos, sub_pos)
             if same_pos:
-                eng_pct = i / float(len(eng_list))
-                sp_pct = j / float(len(sp_list))
+                left_pct = i / float(len(left_list))
+                right_pct = j / float(len(right_list))
 
                 # compare relative positions in text
-                if abs(eng_pct - sp_pct) < 0.20:
+                if abs(left_pct - right_pct) < 0.20:
                     page = urllib.request.urlopen(createURL(w1, w2))
                     score = float(page.read())
 
@@ -309,6 +315,61 @@ def createPieChart(vals, total_sents):
     # ax.set_title('Breakdown of Text Aligner Analysis')
 
     plt.savefig(PIE_OUT_FILE)
+
+def startup():
+    #git input
+    parser = optparse.OptionParser(description="entry interace")
+
+    parser.add_option('-f', '--lexL', type='string', help='The name of a file \
+    storing the lexical tags for the left side language')
+
+    parser.add_option('-g', '--lexR', type='string', help='The name of a file \
+    storing the lexical tags for the right side language')
+
+    parser.add_option('-c', '--Lcorpus', type='string', help='The name of a file \
+    storing the parallel corpus for the left side language')
+
+    parser.add_option('-e', '--Rcorpus', type='string', help='The name of a file \
+    storing the parallel corpus for the right side language')
+
+    parser.add_option('-d', '--dictionary', type='string', help='The name of a\
+    file containing an apertium bilingual dictionary')
+
+    parser.add_option('-l', '--Llanguage', type='string', help='The language \
+    code of the left side language')
+
+    parser.add_option('-r', '--Rlanguage', type='string', help='The language \
+    code of the right side language')
+
+    parser.add_option('-b', '--bilanguage', type='string', help='The language \
+    code of the translation pair')
+
+    parser.add_option('-v', '--Ltransducer', type='string', help='Path to \
+    transducer for left side language')
+
+    parser.add_option('-t', '--Ttransducer', type='string', help='Path to \
+    translation transducer')
+
+    (opts, args) = parser.parse_args()
+
+    mandatories = ["lexL", "lexR", "Lcorpus", "Rcorpus", "dictionary", "Llanguage", "Rlanguage", \
+    "bilanguage", "Ltransducer", "Ttransducer"]
+
+    for m in mandatories:
+        if not opts.__dict__[m]:
+            print('mandatory option ' + m + ' is missing\n')
+            parser.print_help()
+            sys.exit()
+
+    #read dictionary into list
+    dic = read_dictionary(opts.dictionary)
+
+    #create lists of lexical tags
+    Ltags = parse_lex_tags(opts.lexL)
+    Rtags = parse_lex_tags(opts.lexR)
+
+    return dic, Ltags, Rtags, opts.Lcorpus, opts.Rcorpus, opts.Llanguage, opts.Rlanguage, opts.bilanguage,\
+    opts.Ltransducer, opts.Ttransducer, opts.dictionary
 
 if __name__ == '__main__':
     main()
